@@ -62,7 +62,7 @@ function BGD_OnEvent(frame, event, ...)
     end
 
     if ((event == "ZONE_CHANGED_NEW_AREA") or (event == "ADDON_LOADED")) then
-        if(BGD_isInBG()) then            
+        if(BGD_isInBG()) then
 			DEFAULT_CHAT_FRAME:AddMessage("BGD loaded", 1.0, 0.5, 0.5)
             BGD_Prefs.ShowUI = BGD_Toggle(true)
        else
@@ -241,14 +241,14 @@ function BGD_NumCall(arg1)
 ---------
     local location = nil
     local call = ""
-    
+
     if (not BGD_isInBG()) then
         BGD_Msg(BGD_OUT)
         return
     end
-    
+
     location = BGD_GetSubZoneText()
-    
+
     if (location ~= nil and location~="") then
         if (arg1==6) then
             call = BGD_INCPLUS
@@ -256,12 +256,12 @@ function BGD_NumCall(arg1)
             call = BGD_HELP
         elseif (arg1==8) then
             call = BGD_SAFE
-        else 
+        else
             call = BGD_INC
             call = string.gsub(call, "$num", arg1)
         end
         call = string.gsub(call, "$base", location)
-        
+
         local channel = BGD_Prefs.BGChat
         if (BGD_isInRaidBG()) then
             channel = BGD_Prefs.RaidChat
@@ -271,7 +271,7 @@ function BGD_NumCall(arg1)
         end
         if (channel == BGD_GENERAL) then
             local index, name = GetChannelName(BGD_GENERAL.." - "..GetZoneText())
-            if (index~=0) then 
+            if (index~=0) then
                 SendChatMessage(call , "CHANNEL", nil, index)
             end
         elseif (channel == "SELF_WISPER") then
@@ -290,7 +290,7 @@ function BGD_Msg(text)
 ---------
     if (text) then
         DEFAULT_CHAT_FRAME:AddMessage(text, 1, 0, 0)
-        UIErrorsFrame:AddMessage(text, 1.0, 1.0, 0, 1, 10) 
+        UIErrorsFrame:AddMessage(text, 1.0, 1.0, 0, 1, 10)
     end
 end
 
@@ -311,38 +311,44 @@ end
 function BGD_isInBG()
 ---------
     local bgInstanceMapIDs = {
-        [30] = "Alterac Valley",
-        [529] = "Arathi Basin",
-        -- [1105] = "Deepwind Gorge",
-        [566] = "Eye of the Storm",
-        [968] = "Eye of the Storm (Rated)",
-        [628] = "Isle of Conquest",
-        -- [1803] = "Seething Shore",
-        -- [727] = "Silvershard Mines",
-        [607] = "Strand of the Ancients",
-        -- [998] = "Temple of Kotmogu",
-        [761] = "The Battle for Gilneas",
-        [726] = "Twin Peaks",
+                [30] = "Alterac Valley",
         [489] = "Warsong Gulch",
-    }
+                [529] = "Arathi Basin(classic)",
+        [566] = "Eye of the Storm",
+        [607] = "Strand of the Ancients",
+        [628] = "Isle of Conquest",
+        [726] = "Twin Peaks",
+        [727] = "Silvershard Mines",
+        [761] = "The Battle for Gilneas",
+        -- [998] = "Temple of Kotmogu",
+            [968] = "Eye of the Storm (Rated)",
+        [1280] = "Southshore vs. Tarren Mill",
+        [1681] = "Arathi Basin(winter)",
+        [2107] = "Arathi Basin",
+        [2177] = "Arathi Basin Comp Stomp",
+                [1803] = "Seething Shore",
+        [2106] = "Warsong Gulch",
+        [2197] = "Korrak's Revenge",
+        [2245] = "Deepwind Gorge",
+            }
     -- New approach to check which BG we are in by using its InstanceID
     local tmp = bgInstanceMapIDs[BGD_GetInstanceMapID()]
     if tmp~=nil then
-        DEFAULT_CHAT_FRAME:AddMessage("[BGD] lookup instance map id: "..tmp, 1.0, 0.7, 0.2)
+        -- DEFAULT_CHAT_FRAME:AddMessage("[BGD] lookup instance map id: "..tmp, 1.0, 0.7, 0.2)
         return true
     end
 
     -- Fall back to the old method for special cases.
     local found = false
     local zone = GetZoneText()
-    -- if ((zone == BGD_AV)  or (zone == BGD_AB)   or (zone == BGD_WSG)  or (zone == BGD_WSL) or 
+    -- if ((zone == BGD_AV)  or (zone == BGD_AB)   or (zone == BGD_WSG)  or (zone == BGD_WSL) or
     --    (zone == BGD_SWH) or (zone == BGD_EOTS) or (zone == BGD_SOTA) or (zone == BGD_IOC) or
     --    (zone == BGD_GIL) or (zone == BGD_TP)   or (zone == BGD_DMH)  or (zone == BGD_WHS)) then
     --    found = true
     -- else
     if (BGD_isInRaidBG()) then
         found = true
-    elseif (BGD_isInNoSubZoneBG()) then 
+    elseif (BGD_isInNoSubZoneBG()) then
 		found = true
 	end
     return found
@@ -355,7 +361,7 @@ function BGD_isInNoSubZoneBG()
     local zone = GetZoneText()
     local found = false
 	local playerPos = BGD_GetPlayerPosition()
-	
+
 	-- Make sure we can get our current position
 	if playerPos~=nil then
 		if (zone == BGD_SM) then
@@ -373,7 +379,7 @@ function BGD_ShowStatus()
 ---------
     DEFAULT_CHAT_FRAME:AddMessage(" ", 1.0, 0.5, 0.0)
     DEFAULT_CHAT_FRAME:AddMessage("BG Defender Version |cFF00FF00"..GetAddOnMetadata("BGDefender", "Version").."|r Status", 1.0, 0.5, 0.0)
-    
+
     if (BGD_Prefs.ShowUI == true) then
         DEFAULT_CHAT_FRAME:AddMessage("    UI Visible: |cFF00FF00Yes", 1.0, 0.5, 0.0)
     else
@@ -473,7 +479,7 @@ function BGD_Opt_Frame_OnShow(BGD_Opt_Frame)
     UIDropDownMenu_Initialize(BGD_Opt_Drop1, BGD_Opt_Drop1_Initialize)
     UIDropDownMenu_Initialize(BGD_Opt_Drop2, BGD_Opt_Drop2_Initialize)
     UIDropDownMenu_Initialize(BGD_Opt_Drop3, BGD_Opt_Drop3_Initialize)
-    
+
     BGD_displayLocaleMessages()
 end
 
@@ -606,13 +612,13 @@ function BGD_displayLocaleMessages()
     local call = ""
 
     BGD_initLocale(BGD_Prefs.locale)
-    
+
     if (BGD_Opt_Messages == nil) then
         BGD_Opt_Messages = BGD_Opt_Frame:CreateFontString( "BGD_Opt_Messages", "ARTWORK", "GameFontNormalSmall" )
         BGD_Opt_Messages:SetPoint("TOPLEFT", "BGD_Opt_Txt3", "BOTTOMLEFT", 0, -64)
         BGD_Opt_Messages:SetText( "Messages:" )
     end
-    
+
     if (BGD_Opt_Safe == nil) then
         BGD_Opt_Safe = BGD_Opt_Frame:CreateFontString( "BGD_Opt_Safe", "ARTWORK", "GameFontNormalSmall" )
         BGD_Opt_Safe:SetPoint("TOPLEFT", "BGD_Opt_Messages", "BOTTOMLEFT", 16, -16)
@@ -629,7 +635,7 @@ function BGD_displayLocaleMessages()
     call = string.gsub(call, "$num", 1)
     call = string.gsub(call, "$base", GetSubZoneText())
     BGD_Opt_Inc:SetText( "Incoming: |cFF00FF00" ..call )
-    
+
     if (BGD_Opt_IncPlus == nil) then
         BGD_Opt_IncPlus = BGD_Opt_Frame:CreateFontString( "BGD_Opt_IncPlus", "ARTWORK", "GameFontNormalSmall" )
         BGD_Opt_IncPlus:SetPoint("TOPLEFT", "BGD_Opt_Messages", "BOTTOMLEFT", 16, -48)
@@ -637,14 +643,14 @@ function BGD_displayLocaleMessages()
     call = BGD_INCPLUS
     call = string.gsub(call, "$base", GetSubZoneText())
     BGD_Opt_IncPlus:SetText( "Incoming: |cFF00FF00" ..call )
-    
+
     if (BGD_Opt_Help == nil) then
         BGD_Opt_Help = BGD_Opt_Frame:CreateFontString( "BGD_Opt_Help", "ARTWORK", "GameFontNormalSmall" )
         BGD_Opt_Help:SetPoint("TOPLEFT", "BGD_Opt_Messages", "BOTTOMLEFT", 16, -64)
     end
     call = BGD_HELP
     call = string.gsub(call, "$base", GetSubZoneText())
-    BGD_Opt_Help:SetText( "Help: |cFF00FF00" ..call )    
+    BGD_Opt_Help:SetText( "Help: |cFF00FF00" ..call )
 end
 
 
@@ -678,7 +684,7 @@ function BGD_Opt_Drop1_Initialize()
         BGD_Opt_Frame_UpdateViews()
     end
     UIDropDownMenu_AddButton(info)
-    
+
     info = UIDropDownMenu_CreateInfo()
     info.text = "Party"
     info.checked = (BGD_Prefs.BGChatTemp == "PARTY")
@@ -687,7 +693,7 @@ function BGD_Opt_Drop1_Initialize()
         BGD_Opt_Frame_UpdateViews()
     end
     UIDropDownMenu_AddButton(info)
-    
+
     info = UIDropDownMenu_CreateInfo()
     info.text = BGD_GENERAL
     info.checked = (BGD_Prefs.BGChatTemp == BGD_GENERAL)
@@ -737,7 +743,7 @@ function BGD_Opt_Drop2_Initialize()
         BGD_Opt_Frame_UpdateViews()
     end
     UIDropDownMenu_AddButton(info)
-    
+
     info = UIDropDownMenu_CreateInfo()
     info.text = "Party"
     info.checked = (BGD_Prefs.RaidChatTemp == "PARTY")
@@ -746,7 +752,7 @@ function BGD_Opt_Drop2_Initialize()
         BGD_Opt_Frame_UpdateViews()
     end
     UIDropDownMenu_AddButton(info)
-    
+
     info = UIDropDownMenu_CreateInfo()
     info.text = BGD_GENERAL
     info.checked = (BGD_Prefs.RaidChatTemp == BGD_GENERAL)
@@ -800,7 +806,7 @@ function BGD_Opt_Drop3_Initialize()
         BGD_displayLocaleMessages()
     end
     UIDropDownMenu_AddButton(info)
-    
+
     info = UIDropDownMenu_CreateInfo()
     info.text = "esMX"
     info.checked = (BGD_Prefs.locale == "esMX")
@@ -901,11 +907,11 @@ function BGD_Opt_Frame_UpdateViews()
     elseif (BGD_Prefs.RaidChatTemp == "SELF_WISPER") then
         UIDropDownMenu_SetText(BGD_Opt_Drop2, "Self whisper (debug)")
     end
-    
+
     UIDropDownMenu_SetText(BGD_Opt_Drop3, BGD_Prefs.locale)
 
     BGD_Opt_Btn1:SetChecked(BGD_Prefs.preface)
-    
+
     if (BGD_Prefs.movable == true) then
         Button11:SetText(" m ")
     else
